@@ -25,7 +25,7 @@ export async function verifyOTP(uid, otp) {
     const expires = new Date(decodedToken.exp * 1000);
 
     // Set the auth token
-    cookies().set('session', accessToken, { expires, httpOnly: true });
+    await cookies().set('session', accessToken, { expires, httpOnly: true });
   }
 
   return true;
@@ -38,7 +38,7 @@ export async function login(formData) {
 }
 
 export async function logout() {
-  cookies().delete('session');
+  await cookies().delete('session');
 }
 
 export async function verifySession(request) {
