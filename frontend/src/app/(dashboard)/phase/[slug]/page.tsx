@@ -156,8 +156,6 @@ export default async function Page({ params }: PageProps) {
                         <Link href={`/phase/${params.slug}/roadmap`}>View Entire Roadmap</Link>
                     </Button>
                 </div>
-
-
                 <Timeline data={roadmapData} />
 
 
@@ -168,6 +166,16 @@ export default async function Page({ params }: PageProps) {
                     </div>
                     <KanbanBoard />
                 </div>
+
+                {params.slug === "growth" && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-semibold">💡 Reel Script Generation</h2>
+                            {/* <NewTaskDialog /> */}
+                        </div>
+                        {/* <KanbanBoard /> */}
+                    </div>
+                )}
             </div>
         </PageContainer>
     );

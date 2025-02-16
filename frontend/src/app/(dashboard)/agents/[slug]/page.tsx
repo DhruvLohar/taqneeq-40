@@ -30,6 +30,10 @@ import PageContainer from "@/components/layout/page-container"
 
 export default function AgentChat() {
     const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([
+        {
+            text: "Hello, I'm your AI assistant. How can I help you today?",
+            isUser: false,
+        },
     ])
     const [inputValue, setInputValue] = useState("")
 

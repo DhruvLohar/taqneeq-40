@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionItem,
@@ -7,23 +7,30 @@ import {
 } from '@/components/ui/accordion';
 import PageContainer from '@/components/layout/page-container';
 import { AccordionContent } from '@radix-ui/react-accordion';
+import { fetchFromAPI, postDataToAPI } from '@/lib/api';
+import { Button } from '@/components/ui/button';
 
 export default function FAQAccordion() {
+
+  const [content, setContent] = useState<any>(null);
+
+  async function getResponse() {
+    const res: any = await postDataToAPI("users/generateContent/", {
+      industry: "tournament planning and organizing app",
+      topic: "How we effectively manage a tournament from start to finish?",
+      is_reel: true,
+    }, false);
+
+    if (res.success) {
+      setContent(res.data);
+    }
+
+  }
+
   return (
     <PageContainer>
       <div className='relative w-full px-6 pt-4 antialiased'>
-        <Accordion type='single' collapsible>
-          {faqContent.map((item, index) => (
-            <AccordionItem key={`faq-${index}`} value={`item-${index}`}>
-              <AccordionTrigger className='mb-4 text-xl font-semibold'>
-                {item.question}
-              </AccordionTrigger>
-              <AccordionContent className='prose prose-sm dark:prose-invert mb-2 text-sm'>
-                {item.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <div dangerouslySetInnerHTML={{ __html: content }}></div>
       </div>
     </PageContainer>
   );

@@ -129,6 +129,7 @@ class UserAPIView(
     
     JournalMixin,
     RoadmapMixin,
+    GenAIMixin,
     
     EnhancedResponseMixin
 ):

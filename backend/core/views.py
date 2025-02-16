@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
+from .genai import *
 
 class JournalMixin:
     @action(detail=False, methods=['GET'])
@@ -39,3 +40,17 @@ class RoadmapMixin:
         serializer = RoadmapSerializer(roadmaps, many=True)
         
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+
+
+class GenAIMixin:
+    @action(detail=False, methods=['POST'])
+    def generateContent(self, request, pk=None):
+        data = request.data
+        industry = data.get('industry')
+        topic = data.get('topic')
+        is_reel = data.get('is_reel')
+        
+        response = content_assistant(industry, topic, is_reel)
+        
+        return Response(data=response, status=status.HTTP_200_OK)
