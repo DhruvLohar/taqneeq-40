@@ -43,9 +43,9 @@ export default function AgentChat() {
 
     return (
         <PageContainer>
-            <div className="flex flex-col min-h-screen bg-background p-4">
+            <div className="w-full flex flex-col justify-center items-center min-h-screen bg-background">
                 {messages.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center gap-8">
+                    <div className="w-full flex flex-col items-center justify-center gap-8">
                         <h1 className="text-4xl font-semibold text-foreground">Hello, Dhruv!</h1>
 
                         <div className="w-full max-w-2xl">

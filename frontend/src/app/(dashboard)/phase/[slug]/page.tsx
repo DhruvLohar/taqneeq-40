@@ -1,6 +1,8 @@
 import PageContainer from "@/components/layout/page-container";
+import { Button } from "@/components/ui/button";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 import Image from "next/image";
+import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 
 
@@ -66,38 +68,21 @@ export default function PhaseView() {
 
     return (
         <PageContainer>
-            <main className="min-h-screen bg-background">
+            <div className='flex flex-1 flex-col space-y-2'>
+                <div className='flex items-center justify-between space-y-2'>
+                    <h2 className='text-2xl font-bold tracking-tight'>
+                        📌 Current Roadmap Status
+                    </h2>
 
-                <h1 className="text-lg">Your Roadmap</h1>
+                    <Link href={"/phase/ideation/roadmap"}>
+                        <Button variant={"ghost"} size={"sm"}>View Roadmap</Button>
+                    </Link>
+                </div>
 
-                <TracingBeam className="px-6">
-                    <div className="max-w-2xl mx-auto antialiased pt-4 relative">
-                        {ideationRoadmap.map((item, index) => (
-                            <div key={`content-${index}`} className="mb-10">
-                                <h2 className="bg-black text-white rounded-full text-sm w-fit py-1 mb-4">
-                                    {index+1} - {item.badge}
-                                </h2>
-                                <p className={twMerge("text-xl mb-4")}>
-                                    {item.title}
-                                </p>
-
-                                <div className="text-sm text-gray-500 prose prose-sm dark:prose-invert">
-                                    {/* {item?.image && (
-                                        <Image
-                                            src={item.image}
-                                            alt="blog thumbnail"
-                                            height="1000"
-                                            width="1000"
-                                            className="rounded-lg mb-10 object-cover"
-                                        />
-                                    )} */}
-                                    {item.description}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </TracingBeam>
-            </main>
+                <h2 className='text-2xl font-bold tracking-tight'>
+                    ✏️ Kanban Board
+                </h2>
+            </div>
         </PageContainer>
     )
 }

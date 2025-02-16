@@ -32,7 +32,7 @@ export const navItems: NavItem[] = [
   {
     title: 'Phases',
     url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
+    icon: 'settings',
     isActive: true,
 
     items: [
@@ -44,7 +44,7 @@ export const navItems: NavItem[] = [
       },
       {
         title: 'Planning & Startegy',
-        url: '/phase/ideation',
+        url: '/phase/planning',
         icon: 'userPen',
         shortcut: ['i', 'i']
       }
