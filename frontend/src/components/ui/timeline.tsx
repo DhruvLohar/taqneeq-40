@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface TimelineEntry {
   title: string;
+  duration: string;
   content: React.ReactNode;
 }
 
@@ -51,7 +52,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
             <div className='relative w-full pl-20 pr-4 md:pl-4'>
               <h3 className='mb-4 block text-left text-xl font-bold text-card-foreground md:hidden'>
-                {item.title}
+                {item.duration}
               </h3>
               {item.content}{' '}
             </div>

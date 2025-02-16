@@ -47,9 +47,27 @@ export const navItems: NavItem[] = [
         url: '/phase/planning',
         icon: 'userPen',
         shortcut: ['i', 'i']
+      },
+      {
+        title: 'Launch & Execution',
+        url: '/phase/launch',
+        icon: 'userPen',
+        shortcut: ['i', 'i']
+      },
+      {
+        title: 'Legal Foundations & Finance',
+        url: '/phase/legal',
+        icon: 'userPen',
+        shortcut: ['i', 'i']
+      },
+      {
+        title: 'Growth Marketing & Scaling',
+        url: '/phase/growth',
+        icon: 'userPen',
+        shortcut: ['i', 'i']
       }
     ]
-  },
+  }
   // {
   //   title: 'Kanban',
   //   url: '/kanban',
