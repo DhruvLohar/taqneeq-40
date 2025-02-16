@@ -1,3 +1,4 @@
+import json
 import google.generativeai as genai
 from .prompts import *
 
@@ -18,6 +19,10 @@ def content_assistant(industry, topic, is_reel=False):
     else:
         full_prompt = getPostPrompt(industry, topic)
 
+
     response = get_gemini_response(full_prompt)
+    # print(response)
+    # data = json.loads(response)
+    # print(type(data), data.keys())
     
     return response
