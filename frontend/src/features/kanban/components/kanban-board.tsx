@@ -196,14 +196,14 @@ export function KanbanBoard() {
                 column={col}
                 tasks={tasks.filter((task) => task.status === col.id)}
               />
-              {index === columns?.length - 1 && (
+              {/* {index === columns?.length - 1 && (
                 <div className='w-[300px]'>
                   <NewSectionDialog />
                 </div>
-              )}
+              )} */}
             </Fragment>
           ))}
-          {!columns.length && <NewSectionDialog />}
+          {/* {!columns.length && <NewSectionDialog />} */}
         </SortableContext>
       </BoardContainer>
 

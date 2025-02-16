@@ -1,6 +1,9 @@
 import PageContainer from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
+import { Timeline } from "@/components/ui/timeline";
 import { TracingBeam } from "@/components/ui/tracing-beam";
+import { KanbanBoard } from "@/features/kanban/components/kanban-board";
+import NewTaskDialog from "@/features/kanban/components/new-task-dialog";
 import Image from "next/image";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
@@ -8,80 +11,64 @@ import { twMerge } from "tailwind-merge";
 
 export default function PhaseView() {
 
-    const ideationRoadmap = [
+    const roadmapData = [
         {
-            title: "Talk to Actual Business Owners",
-            description: (
-                <>
-                    <p>
-                        Before diving into development, have real conversations with business owners
-                        in your target industry. Understand their pain points, workflows, and what
-                        solutions they actually need. This helps validate if your idea has real-world
-                        demand.
+            title: 'Understanding the Problem',
+            duration: '1-2 weeks',
+            content: (
+                <div>
+                    <h3 className='mb-2 text-lg font-semibold'>
+                        Identifying Pain Points & Market Needs
+                    </h3>
+                    <p className='mb-4 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm'>
+                        Conduct research to understand the challenges faced by tournament organizers, players, and audiences. Identify gaps in existing solutions and define how your app will solve these problems effectively.
                     </p>
-                    <p>
-                        Cold outreach works best—send personalized emails, LinkedIn messages, or
-                        even cold-call local businesses. Offer a short call in exchange for their
-                        insights.
-                    </p>
-                </>
-            ),
-            badge: "User Research",
+
+                    <h4 className='mb-2 text-sm font-medium'>Things to Do:</h4>
+                    <ul className='mb-6 space-y-2'>
+                        <li className='flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm'>
+                            ✅ Interview event organizers, gamers, and referees
+                        </li>
+                        <li className='flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm'>
+                            ✅ Research competitors (e.g., Challenge, Tournament)
+                        </li>
+                        <li className='flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm'>
+                            ✅ Study tournament workflows and common pain points
+                        </li>
+                    </ul>
+                </div>
+            )
         },
-        {
-            title: "Conduct Surveys via Market Research Firms",
-            description: (
-                <>
-                    <p>
-                        A broader way to validate demand is through structured surveys. Use market
-                        research firms like Nielsen, Qualtrics, or SurveyMonkey to collect insights
-                        from a larger audience.
-                    </p>
-                    <p>
-                        Design surveys with direct questions about the problem, existing solutions,
-                        and willingness to pay. Incentivize responses with gift cards or exclusive
-                        access to your solution.
-                    </p>
-                </>
-            ),
-            badge: "Market Research",
-        },
-        {
-            title: "Analyze Competitor Offerings & Gaps",
-            description: (
-                <>
-                    <p>
-                        Research existing competitors in your space. What are they doing well? Where
-                        do users complain the most? This will help you find opportunities to create a
-                        better solution rather than reinventing the wheel.
-                    </p>
-                    <p>
-                        Use tools like G2, Capterra, Reddit, and Twitter to see unfiltered feedback.
-                        If possible, talk to their users and learn about their pain points.
-                    </p>
-                </>
-            ),
-            badge: "Competitive Analysis",
-        },
-    ];
+    ]
 
 
     return (
         <PageContainer>
             <div className='flex flex-1 flex-col space-y-2'>
-                <div className='flex items-center justify-between space-y-2'>
+                <div className='flex items-center justify-between space-y-4'>
                     <h2 className='text-2xl font-bold tracking-tight'>
                         📌 Current Roadmap Status
                     </h2>
 
                     <Link href={"/phase/ideation/roadmap"}>
-                        <Button variant={"ghost"} size={"sm"}>View Roadmap</Button>
+                        <Button variant={"ghost"} size={"sm"}>View Entire Roadmap</Button>
                     </Link>
                 </div>
 
-                <h2 className='text-2xl font-bold tracking-tight'>
-                    ✏️ Kanban Board
-                </h2>
+                <Timeline data={roadmapData} />
+
+                <div className="w-full mt-4">
+                    <div className='flex items-center justify-between space-y-4 mb-8'>
+                        <h2 className='text-2xl font-bold tracking-tight'>
+                            ✏️ Kanban Board
+                        </h2>
+
+                        <NewTaskDialog />
+                    </div>
+
+                    <KanbanBoard />
+                </div>
+
             </div>
         </PageContainer>
     )

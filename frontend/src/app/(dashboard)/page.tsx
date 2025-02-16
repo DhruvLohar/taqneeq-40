@@ -191,7 +191,7 @@ export default function Page() {
         </div>
         <div className='grid gap-4 md:grid-cols-3 lg:grid-cols-4'>
           {/* First card taking 2 rows and 2 columns */}
-          <Card className='relative overflow-hidden md:col-span-2 md:row-span-2 shadow-[0_0_0px_3px_rgba(255,0,0,0.5)]'>
+          <Card className='relative overflow-hidden md:col-span-2 md:row-span-2'>
             <Image
               src={dashboardCards[0].backgroundImage}
               alt={`${dashboardCards[0].title} background`}
