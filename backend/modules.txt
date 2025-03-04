@@ -10,6 +10,8 @@ django-redis
 python-dotenv
 drf-spectacular
 django-tinymce
+channels["daphne"]
+django-filter
 
 pandas
 numpy

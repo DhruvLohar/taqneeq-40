@@ -52,10 +52,21 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+# CHANNELS CONFIG
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('localhost', 6379)],
+        },
+    },
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -65,6 +76,8 @@ INSTALLED_APPS = [
     
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
+    'clients.apps.ClientsConfig',
+    'messenger.apps.MessengerConfig',
     
     'tinymce'
 ]
@@ -115,7 +128,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+# WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
