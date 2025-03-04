@@ -48,9 +48,9 @@ import { logout } from '@/lib/auth';
 import { fetchFromAPI } from '@/lib/api';
 
 export const company = {
-  name: 'Solopreneur.ai',
+  name: 'Dala.ai',
   logo: GalleryVerticalEnd,
-  plan: 'Planning & Strategy'
+  plan: 'Welcome User'
 };
 
 // Mock user data

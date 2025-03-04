@@ -46,7 +46,7 @@ interface ReelScriptDisplayProps {
   data: ReelScript;
 }
 
-const ViewScriptDisplay: React.FC<ReelScriptDisplayProps> = ({ data }) => {
+const ViewScriptDisplay: React.FC<any> = ({ data }) => {
   return (
     <Card className="w-full max-w-4xl mx-auto p-6">
       <CardHeader>
@@ -77,7 +77,7 @@ const ViewScriptDisplay: React.FC<ReelScriptDisplayProps> = ({ data }) => {
         {/* Script Breakdown */}
         <div className="mb-6">
           <h3 className="text-xl font-semibold mb-2">Script Breakdown</h3>
-          {data.reel_script.script_breakdown.map((scene, index) => (
+          {data.reel_script.script_breakdown.map((scene: any, index: number) => (
             <div key={index} className="mb-4">
               <h4 className="text-lg font-medium">Scene {scene.scene_number}</h4>
               <p><strong>Dialogue:</strong> {scene.dialogue}</p>

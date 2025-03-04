@@ -6,8 +6,8 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
-  title: 'Solopreuner.ai',
-  description: 'Comprehensive AI-powered platform for solo entrepreneurs.',
+  title: 'Dala.ai',
+  description: 'Comprehensive AI-powered CRM for Real Estate.',
 };
 
 export default async function DashboardLayout({

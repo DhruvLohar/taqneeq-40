@@ -8,8 +8,8 @@ import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Solopreuner.ai',
-  description: 'Comprehensive AI-powered platform for solo entrepreneurs.',
+  title: 'Dala.ai',
+  description: 'Comprehensive AI-powered CRM for Real Estate Brokers.',
 };
 
 const lato = Lato({

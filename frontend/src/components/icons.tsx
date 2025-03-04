@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  Bot,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -63,6 +64,7 @@ export const Icons = {
   pizza: Pizza,
   sun: SunMedium,
   moon: Moon,
+  bot: Bot,
   laptop: Laptop,
   gitHub: ({ ...props }: LucideProps) => (
     <svg

@@ -44,7 +44,7 @@ export default function OnboardingForm() {
     setFormData(completeFormData);
     console.log('Complete form data:', completeFormData);
     toast.success('Onboarding completed successfully!');
-    router.push('/overview');
+    router.push('/');
   };
 
   const stepComponents = {

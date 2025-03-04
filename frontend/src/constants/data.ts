@@ -22,60 +22,21 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'AI Agents',
-    url: '/agents',
-    icon: 'product',
-    shortcut: ['p', 'p'],
+    title: 'Clients',
+    url: '/clients',
+    icon: 'user',
+    shortcut: ['c', 'c'],
     isActive: false,
     items: [] // No child items
   },
   {
-    title: 'Phases',
-    url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'settings',
-    isActive: true,
-
-    items: [
-      {
-        title: 'Ideation & Research',
-        url: '/phase/ideation',
-        icon: 'userPen',
-        shortcut: ['i', 'i']
-      },
-      {
-        title: 'Planning & Startegy',
-        url: '/phase/planning',
-        icon: 'userPen',
-        shortcut: ['i', 'i']
-      },
-      {
-        title: 'Launch & Execution',
-        url: '/phase/launch',
-        icon: 'userPen',
-        shortcut: ['i', 'i']
-      },
-      {
-        title: 'Legal Foundations & Finance',
-        url: '/phase/legal',
-        icon: 'userPen',
-        shortcut: ['i', 'i']
-      },
-      {
-        title: 'Growth Marketing & Scaling',
-        url: '/phase/growth',
-        icon: 'userPen',
-        shortcut: ['i', 'i']
-      }
-    ]
-  }
-  // {
-  //   title: 'Kanban',
-  //   url: '/kanban',
-  //   icon: 'kanban',
-  //   shortcut: ['k', 'k'],
-  //   isActive: false,
-  //   items: [] // No child items
-  // }
+    title: 'Chat with Dala.ai',
+    url: '/agents/main',
+    icon: 'bot',
+    shortcut: ['b', 'b'],
+    isActive: false,
+    items: [] // No child items
+  },
 ];
 
 export interface SaleUser {
