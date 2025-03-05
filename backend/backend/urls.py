@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 from users.urls import router as up
+from clients.urls import router as cp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     path('users/', include(up.urls)),
+    path('clients/', include(cp.urls)),
 ]

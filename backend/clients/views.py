@@ -2,17 +2,18 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.authentication import CookieAuthentication
+from backend.responses import EnhancedResponseMixin
 
 from .models import Client
 from .serializers import ClientSerializer
 
-class ClientViewSet(viewsets.ModelViewSet):
+class ClientViewSet(viewsets.ModelViewSet, EnhancedResponseMixin):
     """
     A viewset for viewing and editing client instances.
     """
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-    authentication_classes = [CookieAuthentication]
+    # authentication_classes = [CookieAuthentication]
     
     # Add filtering capabilities
     filter_backends = [

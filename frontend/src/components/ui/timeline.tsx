@@ -45,7 +45,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
               <div className='absolute left-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground md:left-3'>
                 <div className='h-4 w-4 rounded-full border border-primary bg-primary p-2' />
               </div>
-              <h3 className='hidden text-lg font-bold text-card-foreground md:block md:pl-20 md:text-5xl'>
+              <h3 className='hidden text-lg font-bold text-card-foreground md:block md:pl-20 md:text-4xl'>
                 {item.title}
               </h3>
             </div>

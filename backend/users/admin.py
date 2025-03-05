@@ -3,7 +3,7 @@ from users.models import *
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'created_at', 'modified_at', 'last_login', 'is_active')
+    list_display = ('id', 'name', 'email', 'created_at', 'modified_at', 'last_login', 'is_active')
     
     exclude = ('password',)
 

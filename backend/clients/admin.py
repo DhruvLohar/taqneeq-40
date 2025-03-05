@@ -4,7 +4,7 @@ from .models import Client
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
     # Customize the list display to show key fields in the admin list view
-    list_display = ('name', 'phone_number', 'email', 'source', 'status', 'budget')
+    list_display = ('id', 'name', 'phone_number', 'email', 'source', 'status', 'budget')
     
     # Add filters for easy searching and categorization
     list_filter = ('source', 'status', 'budget', 'loan_required')

@@ -57,9 +57,6 @@ const ChatInterface = () => {
 
   return (
     <Card className='mx-auto w-full'>
-      <CardHeader>
-        <CardTitle>Your Very Own Personalised Chatbot</CardTitle>
-      </CardHeader>
       <CardContent className='p-4'>
         <ScrollArea className='h-[400px] pr-4'>
           <div className='space-y-4'>
