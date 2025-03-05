@@ -52,7 +52,7 @@ export function OtpDialog({ uid, open, onOpenChange }: OtpDialogProps) {
 
     if (response) {
       toast.success('OTP verified successfully!');
-      router.replace('/onboarding');
+      router.replace('/');
     } else {
       toast.error('Invalid OTP. Please try again.');
     }

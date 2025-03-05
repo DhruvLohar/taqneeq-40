@@ -64,24 +64,30 @@ interface NotesDataType {
   [key: string]: NoteData;
 }
 
-// Mock data for notes (this would come from your backend in a real app)
+// Mock data for real estate-related notes
 const PREFILLED_NOTES: NotesDataType = {
-  '2025-02-18': {
-    title: 'Team Meeting',
-    content: 'Discuss Q1 goals and project timeline',
+  '2025-03-18': {
+    title: 'Client Inquiry - 2BHK in Bandra',
+    content: 'Discussed budget (₹1.5 Cr), sea-facing preference, and required amenities (Gym, Parking). Follow-up scheduled for next week.',
     updated: false
   },
-  '2025-02-20': {
-    title: 'Client Presentation',
-    content: 'Present the new product features to ABC Corp',
+  '2025-03-20': {
+    title: 'Property Visit - Andheri West',
+    content: 'Client interested in semi-furnished 3BHK. Noted feedback on interior design and security. Sent property details via email.',
     updated: true
   },
-  '2025-02-25': {
-    title: 'Product Launch',
-    content: 'Finalize details for the new product launch',
+  '2025-03-22': {
+    title: 'Follow-up Call - Mr. Sharma',
+    content: 'Client considering a resale property. Requested documentation details and legal verification process.',
+    updated: false
+  },
+  '2025-03-25': {
+    title: 'Site Visit - New Project in Powai',
+    content: 'Organized a tour for 3 clients. Highlighted builder reputation, amenities, and financing options.',
     updated: false
   }
 };
+
 
 export default function ClientManagementPage() {
 
