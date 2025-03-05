@@ -21,10 +21,10 @@ import {
     FileCheck,
     FileWarning
 } from 'lucide-react';
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import ChatInterface from "@/components/personal/chatbot/MainChatbot";
 import { FollowUpDialog } from "@/components/IndividualClient/Followup";
-
+import { fetchFromAPI } from "@/lib/api";
 export default function EnhancedClientDetails({ params }: { params: Promise<{ id: number }> }) {
 
     const resolveParams = React.use(params)
@@ -42,7 +42,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
     const [showObjectionDialog, setShowObjectionDialog] = useState(false);
 
     // Mock data for the client (replace with API calls)
-    const client = {
+    const _client = {
         id: resolveParams.id,
         name: "Rajesh Kumar",
         phone: "+91 98765 43210",
@@ -103,7 +103,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
         ]
     };
 
-    const [followUps, setFollowUps] = useState(client.followUps);
+    const [followUps, setFollowUps] = useState(_client.followUps);
 
     interface FollowUp {
         task: string;
@@ -219,7 +219,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
         <PageContainer>
             <Tabs defaultValue="overview" className="w-full space-y-4">
                 <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-bold">Client Profile: {client.name}</h1>
+                    <h1 className="text-3xl font-bold">Client Profile: {client?.name}</h1>
                     <TabsList>
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="interactions">Interactions</TabsTrigger>
@@ -237,46 +237,50 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                             <CardContent className="space-y-6">
                                 <div className="flex items-center space-x-4">
                                     <Avatar className="h-16 w-16">
-                                        <AvatarFallback className="text-2xl">{client.name[0]}</AvatarFallback>
+                                        <AvatarFallback className="text-2xl">JD</AvatarFallback>
                                         <AvatarImage src="/avatar.png" />
                                     </Avatar>
                                     <div>
-                                        <p className="text-xl font-semibold">{client.name}</p>
+                                        <p className="text-xl font-semibold">{client?.name}</p>
                                         <div className="flex items-center space-x-2 text-muted-foreground">
                                             <PhoneCall className="h-4 w-4" />
-                                            <p className="text-sm">{client.phone}</p>
+                                            <p className="text-sm">{client?.phone_number}</p>
                                         </div>
                                         <div className="flex items-center space-x-2 text-muted-foreground">
                                             <Mail className="h-4 w-4" />
-                                            <p className="text-sm">{client.email}</p>
+                                            <p className="text-sm">{client?.email}</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center">
                                         <span className="font-semibold">Conversion Probability</span>
-                                        <Badge variant="outline">{client.conversionProbability}%</Badge>
+                                        <Badge variant="outline">{_client.conversionProbability}%</Badge>
                                     </div>
-                                    <Progress value={client.conversionProbability} />
+                                    <Progress value={_client.conversionProbability} />
 
                                     <div className="grid grid-cols-2 gap-3 mt-4">
                                         <div className="flex items-center space-x-2">
                                             <Building className="h-5 w-5 text-muted-foreground" />
                                             <span className="text-sm">Status</span>
                                         </div>
-                                        <Badge>{client.status}</Badge>
-
-                                        <div className="flex items-center space-x-2">
-                                            <DollarSign className="h-5 w-5 text-muted-foreground" />
-                                            <span className="text-sm">Deal Value</span>
-                                        </div>
-                                        <span className="font-semibold">{client.dealValue}</span>
+                                        <Badge>{client?.status}</Badge>
 
                                         <div className="flex items-center space-x-2">
                                             <Clock className="h-5 w-5 text-muted-foreground" />
                                             <span className="text-sm">Next Follow-Up</span>
                                         </div>
-                                        <span className="text-sm">{client.nextFollowUp}</span>
+                                        <span className="text-sm">{_client.nextFollowUp}</span>
+
+                                        <div className="w-full flex items-center space-x-2">
+                                            <span className="text-semibold">Transcription</span>
+                                        </div>
+                                        <span className="font-sm">{client?.transcription}</span>
+
+                                        <div className="w-full flex items-center space-x-2">
+                                            <span className="text-semibold">Client Estimated Loan</span>
+                                        </div>
+                                        <span className="font-sm">{client?.loan_amount} Lacs</span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -294,26 +298,26 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                             <Building className="h-5 w-5 text-muted-foreground" />
                                             <span className="font-semibold">Property Type</span>
                                         </div>
-                                        <p>{client.preferences.propertyType}</p>
+                                        <p>{client?.extracted_details?.bhk} BHK</p>
 
                                         <div className="flex items-center space-x-2">
                                             <DollarSign className="h-5 w-5 text-muted-foreground" />
-                                            <span className="font-semibold">Budget</span>
+                                            <span className="font-semibold">Amenities</span>
                                         </div>
-                                        <p>{client.preferences.budget}</p>
+                                        <p>{client?.extracted_details?.amenities?.join(', ')}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex items-center space-x-2">
                                             <MapPin className="h-5 w-5 text-muted-foreground" />
                                             <span className="font-semibold">Locations</span>
                                         </div>
-                                        <p>{client.preferences.locations.join(", ")}</p>
+                                        <p>{client?.extracted_details?.preferred_location}</p>
 
                                         <div className="flex items-center space-x-2">
                                             <FileText className="h-5 w-5 text-muted-foreground" />
                                             <span className="font-semibold">Possession Timeline</span>
                                         </div>
-                                        <p>{client.preferences.possessionTimeline}</p>
+                                        <p>{_client.preferences.possessionTimeline}</p>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -347,8 +351,10 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                         open={isFollowUpOpen}
                                         onOpenChange={setIsFollowUpOpen}
                                         clientId={client.id}
-                                        clientName={client.name}
-                                    //onFollowUpAdded={handleFollowUpAdded}
+                                        clientName={client?.name}
+                                        clientPhone={client?.phone_number}
+                                        client={client}
+                                        onFollowUpAdded={handleFollowUpAdded}
                                     />
                                 </CardFooter>
                             </Card>
@@ -362,7 +368,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                 <CardTitle>Objections & Concerns</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                {client.objections.map((objection, index) => (
+                                {_client.objections.map((objection, index) => (
                                     <div key={index} className="flex items-center justify-between">
                                         <p>{objection}</p>
                                         <Button variant="outline">Resolve</Button>
@@ -414,7 +420,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                 <CardTitle>Documents</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                {client.documents.map((doc, index) => (
+                                {_client.documents.map((doc, index) => (
                                     <div key={index} className="flex items-center justify-between">
                                         <div className="flex items-center space-x-2">
                                             <doc.icon className="h-5 w-5" />
@@ -487,7 +493,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                             <CardTitle>Client Interaction History</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Timeline data={client.interactions.map(interaction => ({
+                            <Timeline data={_client.interactions.map(interaction => ({
                                 title: `${interaction.type} Interaction`,
                                 duration: interaction.date,
                                 content: (

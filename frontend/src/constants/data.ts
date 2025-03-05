@@ -37,6 +37,14 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [] // No child items
   },
+  {
+    title: 'Follow Ups',
+    url: '/followups',
+    icon: 'employee',
+    shortcut: ['f', 'f'],
+    isActive: false,
+    items: [] // No child items
+  },
 ];
 
 export interface SaleUser {

@@ -19,6 +19,7 @@ interface FollowUpDialogProps {
   clientName: string
   clientEmail?: string
   clientPhone?: string
+  client?: any
   onFollowUpAdded?: (followUp: {
     task: string
     status: string
@@ -33,6 +34,7 @@ export function FollowUpDialog({
   clientName,
   clientEmail = 'RajeshKumar09@gmail.com',
   clientPhone = '8433546745',
+  client=null,
   onFollowUpAdded
 }: FollowUpDialogProps) {
   const [emailContent, setEmailContent] = useState('')
@@ -46,16 +48,7 @@ export function FollowUpDialog({
     const fetchEmailTemplate = async () => {
       try {
         // Dummy template
-        const dummyTemplate = `Dear ${clientName},
-
-I hope this email finds you well. I wanted to follow up on our previous conversation regarding your property search.
-
-[Add specific details about last interaction here]
-
-Please let me know if you have any questions or if you'd like to schedule another discussion.
-
-Best regards,
-Your Property Consultant`
+        const dummyTemplate = `Hi ${clientName}, Hope you're having a great day!  We've been working hard to find ${client?.extracted_details?.bhk} BHK properties in Whitefield that fit your budget of ${client?.budget}, and we've got some exciting options to share.  With the current market trends, now is a great time to explore these opportunities further. Let's find your dream home together!`
 
         setEmailContent(dummyTemplate)
       } catch (error) {

@@ -56,6 +56,7 @@ export default function OnboardingForm({ params }: { params: Promise<{ brokerId:
 
         if (res?.success) {
             toast.success('Onboarding completed successfully!');
+            router.push('/');
         } else {
             toast.error('Failed to complete onboarding : ' + res?.message);
         }
