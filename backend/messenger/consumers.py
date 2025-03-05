@@ -28,13 +28,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         )
 
     @database_sync_to_async
-    def get_connected_users_count(self):
-        """Returns the count of connected users in the session"""
-        channel_layer = get_channel_layer()
-        group_channels = async_to_sync(channel_layer.group_channels)(self.session_id)
-        return len(group_channels)
-
-    @database_sync_to_async
     def save_messages(self, payload):
         """Saves the chat message to the database"""
         try:
@@ -67,10 +60,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         uid = event['uid']
         message = event['message']
 
-        if self.channel_name != event['channelID']:  # Send to others, not sender
-            users_online = await self.get_connected_users_count()  # Get online users
+        if self.channel_name != event['channelID']:  # Send to others, not sende
             await self.send_json({
                 'uid': uid,
                 'message': message,
-                'users_online': users_online
             })

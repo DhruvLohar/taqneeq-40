@@ -1,4 +1,5 @@
 from rest_framework import viewsets, filters
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from rest_framework.response import Response
@@ -94,3 +95,7 @@ class ClientViewSet(viewsets.ModelViewSet, EnhancedResponseMixin):
             return Response("works", status=status.HTTP_201_CREATED)
         
         return Response(data={"detail": "Something went wrong sending the email"}, status=status.HTTP_417_EXPECTATION_FAILED)
+    
+    @action(detail=True, methods=['GET'])
+    def emailGen(self, request):
+        pass
