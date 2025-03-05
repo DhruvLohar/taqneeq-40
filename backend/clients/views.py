@@ -97,5 +97,5 @@ class ClientViewSet(viewsets.ModelViewSet, EnhancedResponseMixin):
         return Response(data={"detail": "Something went wrong sending the email"}, status=status.HTTP_417_EXPECTATION_FAILED)
     
     @action(detail=True, methods=['GET'])
-    def emailGen(self, request):
+    def emailGeneration(self, request):
         pass
