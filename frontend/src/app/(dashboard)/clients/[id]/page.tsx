@@ -21,12 +21,15 @@ import {
     FileCheck,
     FileWarning
 } from 'lucide-react';
-import React from "react";
+import React, { useState } from "react";
 import ChatInterface from "@/components/personal/chatbot/MainChatbot";
-
+import { FollowUpDialog } from "@/components/IndividualClient/Followup";
 export default function EnhancedClientDetails({ params }: { params: Promise<{ id: number }> }) {
-    
+
     const resolveParams = React.use(params)
+    const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Mock data for the client (replace with API calls)
     const client = {
@@ -88,6 +91,19 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                 matchPercentage: 65
             }
         ]
+    };
+
+    const [followUps, setFollowUps] = useState(client.followUps);
+
+    interface FollowUp {
+        task: string;
+        status: string;
+        date: string;
+    }
+
+    const handleFollowUpAdded = (newFollowUp: FollowUp): void => {
+        setFollowUps(prev => [...prev, newFollowUp]);
+        setIsFollowUpOpen(false);
     };
 
     return (
@@ -199,14 +215,32 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                     <CardTitle>Follow-Ups & Recent Interactions</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <Timeline data={client.followUps.map(followUp => ({
-                                        title: followUp.status,
-                                        duration: followUp.date,
-                                        content: followUp.task
-                                    }))} />
+                                    {error ? (
+                                        <div className="text-red-500 text-center p-4">{error}</div>
+                                    ) : (
+                                        <Timeline
+                                            data={followUps.map(followUp => ({
+                                                title: followUp.status,
+                                                duration: followUp.date,
+                                                content: followUp.task
+                                            }))}
+                                        />
+                                    )}
                                 </CardContent>
-                                <CardFooter>
-                                    <Button className="w-full">Add Follow-Up</Button>
+                                <CardFooter className="w-full">
+                                    <Button
+                                        className="w-full"
+                                        onClick={() => setIsFollowUpOpen(true)}
+                                    >
+                                        Add Follow-Up
+                                    </Button>
+                                    <FollowUpDialog
+                                        open={isFollowUpOpen}
+                                        onOpenChange={setIsFollowUpOpen}
+                                        clientId={client.id}
+                                        clientName={client.name}
+                                        onFollowUpAdded={handleFollowUpAdded}
+                                    />
                                 </CardFooter>
                             </Card>
                         </div>
