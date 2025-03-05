@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import PageContainer from "@/components/layout/page-container"
 import { useParams } from "next/navigation"
+import { AddClientDialog } from "@/components/personal/chatbot/NewClientDialog"
 
 // Mock client data - replace with your actual client data
 const clients = [
@@ -130,7 +131,10 @@ export default function AgentChat() {
                             </div>
                         </form>
 
-                        <ClientSelectionDialog />
+                        <div className="flex space-x-3 items-center w-full relative justify-center h-fit">
+                            <ClientSelectionDialog />
+                            <AddClientDialog />
+                        </div>
                     </div>
                 )}
             </div>
@@ -142,7 +146,7 @@ function ClientSelectionDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <div className="flex flex-wrap justify-center gap-2 mt-2">
+                <div className="flex flex-wrap justify-center gap-2">
                     <Button variant="outline" className="rounded-full bg-muted/50 border-none">
                         <Lightbulb className="mr-2 h-4 w-4" />
                         Select Clients

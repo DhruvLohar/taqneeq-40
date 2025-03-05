@@ -21,15 +21,25 @@ import {
     FileCheck,
     FileWarning
 } from 'lucide-react';
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import ChatInterface from "@/components/personal/chatbot/MainChatbot";
 import { FollowUpDialog } from "@/components/IndividualClient/Followup";
+
 export default function EnhancedClientDetails({ params }: { params: Promise<{ id: number }> }) {
 
     const resolveParams = React.use(params)
     const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Add these state variables at the top of your component
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [filePreview, setFilePreview] = useState<string | null>(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
+    // Add these state variables at the top of your component
+    const [newObjection, setNewObjection] = useState<string>('');
+    const [showObjectionDialog, setShowObjectionDialog] = useState(false);
 
     // Mock data for the client (replace with API calls)
     const client = {
@@ -104,6 +114,105 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
     const handleFollowUpAdded = (newFollowUp: FollowUp): void => {
         setFollowUps(prev => [...prev, newFollowUp]);
         setIsFollowUpOpen(false);
+    };
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    // Update the handleFileChange function
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Create preview URL for supported file types
+        if (file.type.startsWith('image/')) {
+            setFilePreview(URL.createObjectURL(file));
+        } else {
+            // For non-image files, we'll just show the file name
+            setFilePreview(null);
+        }
+
+        setSelectedFile(file);
+        setShowConfirmation(true);
+    };
+
+    // Add new function to handle actual upload
+    const handleConfirmUpload = async () => {
+        if (!selectedFile) return;
+
+        setIsLoading(true);
+        try {
+            // TODO: Implement your file upload logic here
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            // await fetch('/api/upload', {
+            //   method: 'POST',
+            //   body: formData
+            // });
+
+            console.log('File uploaded:', selectedFile.name);
+
+            // Reset states after successful upload
+            setSelectedFile(null);
+            setFilePreview(null);
+            setShowConfirmation(false);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setError('Failed to upload file');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Add function to cancel upload
+    const handleCancelUpload = () => {
+        setSelectedFile(null);
+        setFilePreview(null);
+        setShowConfirmation(false);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    // Add these handlers before the return statement
+    const handleAddObjectionClick = () => {
+        setShowObjectionDialog(true);
+    };
+
+    const handleObjectionConfirm = async () => {
+        if (!newObjection.trim()) return;
+
+        setIsLoading(true);
+        try {
+            // TODO: Implement your API call to save the objection
+            // await fetch('/api/objections', {
+            //     method: 'POST',
+            //     body: JSON.stringify({ 
+            //         clientId: client.id, 
+            //         objection: newObjection 
+            //     })
+            // });
+
+            // Update local state (replace with API response)
+            client.objections.push(newObjection);
+
+            // Reset states
+            setNewObjection('');
+            setShowObjectionDialog(false);
+        } catch (error) {
+            console.error('Error adding objection:', error);
+            setError('Failed to add objection');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleObjectionCancel = () => {
+        setNewObjection('');
+        setShowObjectionDialog(false);
     };
 
     return (
@@ -239,7 +348,7 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                         onOpenChange={setIsFollowUpOpen}
                                         clientId={client.id}
                                         clientName={client.name}
-                                        onFollowUpAdded={handleFollowUpAdded}
+                                    //onFollowUpAdded={handleFollowUpAdded}
                                     />
                                 </CardFooter>
                             </Card>
@@ -259,9 +368,44 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                         <Button variant="outline">Resolve</Button>
                                     </div>
                                 ))}
+
+                                {showObjectionDialog && (
+                                    <div className="mt-4 p-4 border rounded-lg">
+                                        <h4 className="font-semibold mb-2">Add New Objection</h4>
+                                        <div className="space-y-4">
+                                            <Textarea
+                                                placeholder="Enter client's objection or concern..."
+                                                value={newObjection}
+                                                onChange={(e) => setNewObjection(e.target.value)}
+                                                className="w-full min-h-[100px]"
+                                            />
+                                            <div className="flex space-x-2">
+                                                <Button
+                                                    onClick={handleObjectionConfirm}
+                                                    disabled={isLoading || !newObjection.trim()}
+                                                >
+                                                    {isLoading ? "Adding..." : "Confirm"}
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={handleObjectionCancel}
+                                                    disabled={isLoading}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full">Add Objection</Button>
+                                <Button
+                                    className="w-full"
+                                    onClick={handleAddObjectionClick}
+                                    disabled={showObjectionDialog}
+                                >
+                                    Add Objection
+                                </Button>
                             </CardFooter>
                         </Card>
 
@@ -281,9 +425,56 @@ export default function EnhancedClientDetails({ params }: { params: Promise<{ id
                                         </Badge>
                                     </div>
                                 ))}
+
+                                {showConfirmation && selectedFile && (
+                                    <div className="mt-4 p-4 border rounded-lg">
+                                        <h4 className="font-semibold mb-2">Preview Upload</h4>
+                                        <div className="space-y-2">
+                                            <p className="text-sm">File: {selectedFile.name}</p>
+                                            <p className="text-sm">Size: {(selectedFile.size / 1024).toFixed(2)} KB</p>
+                                            {filePreview && (
+                                                <div className="mt-2">
+                                                    <img
+                                                        src={filePreview}
+                                                        alt="Preview"
+                                                        className="max-h-40 rounded-lg"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex space-x-2 mt-4">
+                                                <Button
+                                                    onClick={handleConfirmUpload}
+                                                    disabled={isLoading}
+                                                >
+                                                    {isLoading ? "Uploading..." : "Confirm Upload"}
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={handleCancelUpload}
+                                                    disabled={isLoading}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full">Upload Document</Button>
+                                <Button
+                                    className="w-full"
+                                    onClick={handleUploadClick}
+                                    disabled={showConfirmation}
+                                >
+                                    Upload Document
+                                </Button>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileChange}
+                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                />
                             </CardFooter>
                         </Card>
                     </div>
