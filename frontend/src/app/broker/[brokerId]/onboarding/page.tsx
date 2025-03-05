@@ -15,13 +15,14 @@ import { PersonalInfoForm } from '@/components/personal/onboarding/PersonalInfor
 import { VoiceRecordingForm } from '@/components/personal/onboarding/AdditionalInfo';
 import { useRouter } from 'next/navigation';
 import { postDataToAPI } from '@/lib/api';
+import { toFormData } from 'axios';
 
-export default function OnboardingForm({ params }: { params: Promise<{ id: number }> }) {
+export default function OnboardingForm({ params }: { params: Promise<{ brokerId: number }> }) {
 
     const resolveParams = React.use(params);
 
     const router = useRouter();
-    const [step, setStep] = useState(3);
+    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         personalInfo: null,
         propertyInfo: null,
@@ -41,20 +42,23 @@ export default function OnboardingForm({ params }: { params: Promise<{ id: numbe
     };
 
     const handleAdditionalInfo = async (data: any) => {
-        const completeFormData = {
-            ...formData,
-            broker: resolveParams.id,
-            additionalInfo: data
+        const completeFormData: any = {
+            ...(formData.personalInfo || {}), // Flatten personalInfo
+            ...(formData.propertyInfo || {}), // Flatten propertyInfo
+            ...data, // Flatten additionalInfo
+            broker: resolveParams.brokerId // Add broker ID
         };
         setFormData(completeFormData);
+
         
-        console.log('Complete form data:', completeFormData)
+        const res: any = await postDataToAPI('clients/', toFormData(completeFormData), true);
+        console.log(res, toFormData(completeFormData));
 
-        // const res = await postDataToAPI('clients/', completeFormData, true);
-
-        // if (res.success) {
-        //     toast.success('Onboarding completed successfully!');
-        // }
+        if (res?.success) {
+            toast.success('Onboarding completed successfully!');
+        } else {
+            toast.error('Failed to complete onboarding : ' + res?.message);
+        }
 
         // router.push('/');
     };

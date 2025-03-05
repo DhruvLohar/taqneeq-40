@@ -27,10 +27,10 @@ const SOURCES_CHOICES = [
 
 const personalInfoSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  phoneNumber: z.string()
+  phone_number: z.string()
     .refine(val => /^\+?[0-9]{10,14}$/.test(val), 'Invalid phone number'),
   email: z.string().email('Invalid email address').optional(),
-  preferredLanguage: z.string().min(2, 'Language must be specified'),
+  preferred_language: z.string().min(2, 'Language must be specified'),
   source: z.enum(SOURCES_CHOICES).optional(),
 });
 
@@ -42,11 +42,11 @@ export function PersonalInfoForm({
   const form = useForm<z.infer<typeof personalInfoSchema>>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
-      name: '',
-      phoneNumber: '',
-      email: '',
-      preferredLanguage: '',
-      source: undefined,
+      name: 'Dhruv Lohar',
+      phone_number: '9321781063',
+      email: 'dhruvlohar09@gmail.com',
+      preferred_language: 'hindi,english',
+      source: 'Instagram',
     }
   });
    
@@ -74,7 +74,7 @@ export function PersonalInfoForm({
         {/* Phone Number Field */}
         <FormField
           control={form.control}
-          name='phoneNumber'
+          name='phone_number'
           render={({ field }: { field: any }) => (
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
@@ -110,7 +110,7 @@ export function PersonalInfoForm({
         {/* Preferred Language Field */}
         <FormField
           control={form.control}
-          name='preferredLanguage'
+          name='preferred_language'
           render={({ field }: { field: any }) => (
             <FormItem>
               <FormLabel>Preferred Language</FormLabel>

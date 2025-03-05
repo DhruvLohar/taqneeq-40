@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,11 +19,10 @@ import * as z from 'zod';
 
 // Define budget choices (you can replace these with your actual budget options)
 const BUDGET_CHOICES = [
-  'Under 25L',
-  '25L - 50L',
-  '50L - 75L',
-  '75L - 1Cr',
-  'Above 1Cr'
+  '10L-50L',
+  '50L-1Cr',
+  '1Cr-5Cr',
+  '5Cr+'
 ] as const;
 
 // Define property type choices
@@ -48,13 +48,13 @@ const POSSESSION_TIMELINES = [
 ] as const;
 
 const propertyInfoSchema = z.object({
-  propertyType: z.enum(PROPERTY_TYPES).optional(),
+  property_type: z.enum(PROPERTY_TYPES).optional(),
   budget: z.enum(BUDGET_CHOICES).optional(),
-  preferredLocations: z.string().optional(),
-  possessionTimeline: z.enum(POSSESSION_TIMELINES).optional(),
+  preferred_locations: z.string().optional(),
+  possession_timeline: z.enum(POSSESSION_TIMELINES).optional(),
   amenities: z.string().optional(),
-  loanRequired: z.boolean().default(false),
-  loanAmount: z.coerce.number()
+  loan_required: z.boolean().default(false),
+  loan_amount: z.coerce.number()
     .min(0, 'Loan amount must be positive')
     .optional()
 });
@@ -67,13 +67,13 @@ export function PropertyInfoForm({
   const form = useForm<z.infer<typeof propertyInfoSchema>>({
     resolver: zodResolver(propertyInfoSchema),
     defaultValues: {
-      propertyType: undefined,
+      property_type: undefined,
       budget: undefined,
-      preferredLocations: '',
-      possessionTimeline: undefined,
+      preferred_locations: '',
+      possession_timeline: undefined,
       amenities: '',
-      loanRequired: false,
-      loanAmount: undefined
+      loan_required: false,
+      loan_amount: undefined
     }
   });
 
@@ -83,7 +83,7 @@ export function PropertyInfoForm({
         {/* Property Type Field */}
         <FormField
           control={form.control}
-          name='propertyType'
+          name='property_type'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Property Type</FormLabel>
@@ -141,7 +141,7 @@ export function PropertyInfoForm({
         {/* Preferred Locations Field */}
         <FormField
           control={form.control}
-          name='preferredLocations'
+          name='preferred_locations'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preferred Locations</FormLabel>
@@ -159,7 +159,7 @@ export function PropertyInfoForm({
         {/* Possession Timeline Field */}
         <FormField
           control={form.control}
-          name='possessionTimeline'
+          name='possession_timeline'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Possession Timeline</FormLabel>
@@ -206,7 +206,7 @@ export function PropertyInfoForm({
         {/* Loan Required Field */}
         <FormField
           control={form.control}
-          name='loanRequired'
+          name='loan_required'
           render={({ field }) => (
             <FormItem className='flex flex-row items-start space-x-3 space-y-0 p-4'>
               <FormControl>
@@ -225,10 +225,10 @@ export function PropertyInfoForm({
         />
 
         {/* Loan Amount Field (conditionally rendered) */}
-        {form.watch('loanRequired') && (
+        {form.watch('loan_required') && (
           <FormField
             control={form.control}
-            name='loanAmount'
+            name='loan_amount'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Loan Amount</FormLabel>
@@ -239,6 +239,7 @@ export function PropertyInfoForm({
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>Enter the loan amount you are expecting in lacs.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

@@ -40,7 +40,7 @@ class AuthMixin:
             
             generated_otp = randint(10000, 99999)
             email_sent = self.send_otp_on_email(
-                "PDFSummarizer | OTP Authentication",
+                "Dala.ai | OTP Authentication",
                 "otp_email_template.html",
                 user.email,
                 context={

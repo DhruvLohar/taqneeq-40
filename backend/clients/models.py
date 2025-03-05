@@ -24,7 +24,7 @@ class Client(models.Model):
         ('Lost', 'Lost',)
     )
     
-    broker = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='clients')
+    broker = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='clients', null=True, blank=True)
     
     # Basic Information
     name = models.CharField(max_length=100)

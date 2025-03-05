@@ -30,7 +30,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 // Zod schema for voice recording validation
 const voiceRecordingSchema = z.object({
-  voiceRecording: z.instanceof(File)
+  voice_recording: z.instanceof(File)
     .nullable()
     .optional()
     .refine((file) => !file || file.size <= MAX_FILE_SIZE, 'Max file size is 5MB')
@@ -60,7 +60,7 @@ export function VoiceRecordingForm({
   const form = useForm<VoiceRecordingFormData>({
     resolver: zodResolver(voiceRecordingSchema),
     defaultValues: {
-      voiceRecording: undefined,
+      voice_recording: undefined,
     }
   });
 
@@ -80,7 +80,7 @@ export function VoiceRecordingForm({
       setAudioBlob(file);
 
       // Set the file in the form
-      form.setValue('voiceRecording', file);
+      form.setValue('voice_recording', file);
     }
   };
 
@@ -182,7 +182,7 @@ export function VoiceRecordingForm({
 
         // Convert Blob to File for form submission
         const audioFile = new File([wavBlob], 'recording.wav', { type: 'audio/wav' });
-        form.setValue('voiceRecording', audioFile);
+        form.setValue('voice_recording', audioFile);
 
         // Stop all tracks in the stream
         stream.getTracks().forEach(track => track.stop());
@@ -209,7 +209,7 @@ export function VoiceRecordingForm({
   const clearRecording = () => {
     setAudioPreview(null);
     setAudioBlob(null);
-    form.setValue('voiceRecording', undefined);
+    form.setValue('voice_recording', undefined);
   };
 
   // Submit handler
@@ -245,7 +245,7 @@ export function VoiceRecordingForm({
                   <p className="text-sm text-center">Have an audio file?</p>
                   <FormField
                     control={form.control}
-                    name='voiceRecording'
+                    name='voice_recording'
                     render={() => (
                       <FormItem className="w-full">
                         <FormControl>

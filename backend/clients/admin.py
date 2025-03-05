@@ -15,7 +15,7 @@ class ClientAdmin(admin.ModelAdmin):
     # Group fields for better organization in the admin interface
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'phone_number', 'email', 'preferred_language', 'source')
+            'fields': ('name', 'phone_number', 'email', 'preferred_language', 'source', 'broker')
         }),
         ('Property Preferences', {
             'fields': ('property_type', 'budget', 'preferred_locations', 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Client
+from messenger.models import ChatSession
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,6 +8,7 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = [
             'id',  # Include id for reference
             # Basic Information
+            'broker',
             'name', 
             'phone_number', 
             'email', 
@@ -21,34 +23,9 @@ class ClientSerializer(serializers.ModelSerializer):
             'amenities',
             
             # Voice & Transcription
-            'voice_recording', 
-            'transcription', 
-            'key_tags',
+            'voice_recording',
             
             # Financial Details
             'loan_required', 
             'loan_amount',
-            
-            # Status Tracking
-            'status', 
-            'objections'
         ]
-        
-    def validate_phone_number(self, value):
-        """
-        Validate phone number format
-        Add custom validation logic as needed
-        """
-        # Example basic validation (adjust as per your requirements)
-        if not value.isdigit():
-            raise serializers.ValidationError("Phone number must contain only digits")
-        return value
-    
-    def validate_email(self, value):
-        """
-        Optional email validation
-        """
-        # You can add more complex email validation if required
-        if value and '@' not in value:
-            raise serializers.ValidationError("Enter a valid email address")
-        return value

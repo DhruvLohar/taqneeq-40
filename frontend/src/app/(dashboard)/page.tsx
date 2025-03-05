@@ -2,7 +2,7 @@
 import PageContainer from '@/components/layout/page-container';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Users, Clock } from 'lucide-react';
+import { Plus, Users, Clock, Share } from 'lucide-react';
 import Link from 'next/link';
 import {
   Table,
@@ -132,13 +132,30 @@ export default function ClientManagementPage() {
         <div className='grid gap-4 md:grid-cols-3'>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>Conversion Rate</CardTitle>
-              <Users className='h-4 w-4 text-muted-foreground' />
+              <CardTitle className='text-sm font-medium'>Share Link With Client</CardTitle>
+              <Share className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
-              <div className='text-2xl font-bold'>80%</div>
+              <Button
+                className='my-4'
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'Client Link',
+                      text: 'Share this link with your client to get started with basic details and lead generation.',
+                      url: 'http://localhost:3000/broker/2/onboarding'
+                    }).catch((error) => console.error('Error sharing', error));
+                  } else {
+                    alert('Sharing is not supported in this browser.');
+                  }
+                }}
+              >
+                <Share className='h-4 w-4 mr-2' />
+                Share Link
+              </Button>
               <p className='text-xs text-muted-foreground'>
-                Out of {totalClients} total clients
+                You can share this link with your clients to get started
+                with basic details and lead generation.
               </p>
             </CardContent>
           </Card>
@@ -150,7 +167,7 @@ export default function ClientManagementPage() {
             </CardHeader>
             <CardContent>
               <div className='text-2xl font-bold'>{activeClients}</div>
-              <p className='text-xs text-muted-foreground'>
+              <p className='mt-auto text-xs text-muted-foreground'>
                 Out of {totalClients} total clients
               </p>
             </CardContent>
@@ -170,47 +187,6 @@ export default function ClientManagementPage() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Clients Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Client List</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className='text-right'>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {CLIENTS_DATA.map((client) => (
-                  <TableRow key={client.id}>
-                    <TableCell className='font-medium'>{client.name}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={client.status === 'active' ? 'default' : 'outline'}
-                      >
-                        {client.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      <Button variant='outline' size='sm' asChild>
-                        <Link href={`/clients/${client.id}`}>
-                          View Details
-                        </Link>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
 
         <div className='w-full rounded-lg border p-4'>
           <h3 className='mb-4 text-xl font-bold'>Your Journal</h3>
