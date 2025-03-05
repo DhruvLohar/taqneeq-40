@@ -19,25 +19,32 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 // Mock data for prefilled notes - in a real app, this would come from an API or database
 const PREFILLED_NOTES = {
-  '2025-02-18': {
-    title: 'Team Meeting',
-    content: 'Discuss Q1 goals and project timeline',
+  '2025-03-18': {
+    title: 'Client Inquiry - 2BHK in Bandra',
+    content: 'Discussed budget (₹1.5 Cr), sea-facing preference, and required amenities (Gym, Parking). Follow-up scheduled for next week.',
     format: { bold: false, italic: false, underline: false, align: 'left' },
     updated: false
   },
-  '2025-02-20': {
-    title: 'Client Presentation',
-    content: 'Present the new product features to ABC Corp',
+  '2025-03-20': {
+    title: 'Property Visit - Andheri West',
+    content: 'Client interested in semi-furnished 3BHK. Noted feedback on interior design and security. Sent property details via email.',
     format: { bold: true, italic: false, underline: false, align: 'left' },
     updated: true
   },
-  '2025-02-25': {
-    title: 'Product Launch',
-    content: 'Finalize details for the new product launch',
+  '2025-03-22': {
+    title: 'Follow-up Call - Mr. Sharma',
+    content: 'Client considering a resale property. Requested documentation details and legal verification process.',
+    format: { bold: false, italic: true, underline: false, align: 'right' },
+    updated: false
+  },
+  '2025-03-25': {
+    title: 'Site Visit - New Project in Powai',
+    content: 'Organized a tour for 3 clients. Highlighted builder reputation, amenities, and financing options.',
     format: { bold: false, italic: false, underline: false, align: 'center' },
     updated: false
   }
 };
+
 
 export default function NotesPage() {
   const router = useRouter();
@@ -229,11 +236,9 @@ export default function NotesPage() {
               {/* Content Textarea */}
               <textarea
                 placeholder='Write your note here...'
-                className={`min-h-[50vh] w-full resize-none rounded-md border p-2 outline-none ${
-                  format.bold ? 'font-bold' : ''
-                } ${format.italic ? 'italic' : ''} ${
-                  format.underline ? 'underline' : ''
-                }`}
+                className={`min-h-[50vh] w-full resize-none rounded-md border p-2 outline-none ${format.bold ? 'font-bold' : ''
+                  } ${format.italic ? 'italic' : ''} ${format.underline ? 'underline' : ''
+                  }`}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 style={{ textAlign: format.align }}

@@ -22,7 +22,7 @@ class ClientAdmin(admin.ModelAdmin):
                        'possession_timeline', 'amenities')
         }),
         ('Voice & Transcription', {
-            'fields': ('voice_recording', 'transcription', 'key_tags')
+            'fields': ('voice_recording', 'transcription', 'extracted_details')
         }),
         ('Financial Details', {
             'fields': ('loan_required', 'loan_amount')

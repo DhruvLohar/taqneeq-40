@@ -1,43 +1,32 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Mic,
-  MicOff,
-  Upload,
-  Trash2,
-  FileAudio,
-  Timer
-} from 'lucide-react';
+import { Upload, Trash2, FileAudio } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 // Maximum file size (5MB)
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-// Zod schema for voice recording validation
 const voiceRecordingSchema = z.object({
   voice_recording: z.instanceof(File)
     .nullable()
     .optional()
     .refine((file) => !file || file.size <= MAX_FILE_SIZE, 'Max file size is 5MB')
-    .refine((file) => !file || file.type === 'audio/wav', 'Only WAV files are allowed'),
+    .refine((file) => !file || file.type === 'audio/mp3' || file.type === 'audio/mpeg', 'Only MP3 files are allowed'),
 });
 
-// Type inference for the form data
 type VoiceRecordingFormData = z.infer<typeof voiceRecordingSchema>;
 
 export function VoiceRecordingForm({
@@ -45,18 +34,9 @@ export function VoiceRecordingForm({
 }: {
   onSubmit: (data: VoiceRecordingFormData) => void;
 }) {
-  // State variables
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingDuration, setRecordingDuration] = useState(0);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
 
-  // Refs for managing recording
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]); // Store raw Blob chunks
-  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Form setup
   const form = useForm<VoiceRecordingFormData>({
     resolver: zodResolver(voiceRecordingSchema),
     defaultValues: {
@@ -100,83 +80,52 @@ export function VoiceRecordingForm({
     const wavBuffer = new ArrayBuffer(44 + audioBuffer.length * 2);
     const view = new DataView(wavBuffer);
 
-    // RIFF chunk descriptor
-    writeString(view, 0, 'RIFF');
+    // Write WAV header
+    const writeString = (offset: number, string: string) => {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    };
+
+    writeString(0, 'RIFF');
     view.setUint32(4, 36 + audioBuffer.length * 2, true);
-    writeString(view, 8, 'WAVE');
-
-    // FMT sub-chunk
-    writeString(view, 12, 'fmt ');
-    view.setUint32(16, 16, true); // Subchunk1Size
-    view.setUint16(20, 1, true); // Audio format (PCM)
-    view.setUint16(22, 1, true); // Number of channels
-    view.setUint32(24, audioContext.sampleRate, true); // Sample rate
-    view.setUint32(28, audioContext.sampleRate * 2, true); // Byte rate
-    view.setUint16(32, 2, true); // Block align
-    view.setUint16(34, 16, true); // Bits per sample
-
-    // Data sub-chunk
-    writeString(view, 36, 'data');
+    writeString(8, 'WAVE');
+    writeString(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, audioContext.sampleRate, true);
+    view.setUint32(28, audioContext.sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeString(36, 'data');
     view.setUint32(40, audioBuffer.length * 2, true);
 
     // Write audio data
     const samples = new Int16Array(audioBuffer.length);
+    const channelData = audioBuffer.getChannelData(0);
     for (let i = 0; i < audioBuffer.length; i++) {
-      const s = Math.max(-1, Math.min(1, audioBuffer.getChannelData(0)[i]));
-      samples[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      const sample = Math.max(-1, Math.min(1, channelData[i]));
+      samples[i] = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
     }
 
-    // Write samples to buffer
-    const output = new Uint8Array(wavBuffer);
-    const input = new Uint8Array(samples.buffer);
-    output.set(input, 44);
+    const wavBytes = new Uint8Array(wavBuffer);
+    wavBytes.set(new Uint8Array(samples.buffer), 44);
 
-    return new Blob([output], { type: 'audio/wav' });
+    return new File([wavBytes], 'converted.wav', { type: 'audio/wav' });
   };
 
-  // Start audio recording
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.type.includes('audio/mp3') && !file.type.includes('audio/mpeg')) {
+        alert('Please upload an MP3 file');
+        return;
+      }
 
-      // Reset recording duration and chunks
-      setRecordingDuration(0);
-      audioChunksRef.current = [];
-
-      // Start timer
-      recordingTimerRef.current = setInterval(() => {
-        setRecordingDuration(prev => prev + 1);
-      }, 1000);
-
-      // Create media recorder
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm; codecs=opus'
-      });
-
-      mediaRecorderRef.current = mediaRecorder;
-
-      // Handle data available event
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      // Handle recording stop
-      mediaRecorder.onstop = async () => {
-        // Stop timer
-        if (recordingTimerRef.current) {
-          clearInterval(recordingTimerRef.current);
-        }
-
-        // Combine audio chunks into a single Blob
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-
-        // Convert to WAV format
-        const wavBlob = await convertToWav(audioBlob);
-
-        // Create preview and set blob
-        const previewUrl = URL.createObjectURL(wavBlob);
+      try {
+        const wavFile = await convertToWav(file);
+        const previewUrl = URL.createObjectURL(wavFile);
         setAudioPreview(previewUrl);
         setAudioBlob(wavBlob);
 
@@ -205,36 +154,24 @@ export function VoiceRecordingForm({
     }
   };
 
-  // Clear current recording
   const clearRecording = () => {
     setAudioPreview(null);
     setAudioBlob(null);
     form.setValue('voice_recording', undefined);
   };
 
-  // Submit handler
   const handleSubmit = (data: VoiceRecordingFormData) => {
-    if (audioBlob) {
-      onSubmit(data);
+    if (audioFile) {
+      onSubmit({ voiceRecording: audioFile });
+      clearRecording();
     } else {
-      alert('Please upload or record an audio file first.');
+      alert('Please upload an audio file first.');
     }
-  };
-
-  // Format duration in MM:SS
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Voice Recording</CardTitle>
-        <CardDescription>You can either upload a audio talking about the property or just record it right away!</CardDescription>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
             <div className="grid grid-cols-2 gap-4">
@@ -303,12 +240,11 @@ export function VoiceRecordingForm({
               </Card>
             </div>
 
-            {/* Audio Preview */}
             {audioPreview && (
-              <div className="mt-4 space-y-2">
+              <div className="mt-4">
                 <div className="flex items-center space-x-2">
                   <audio controls className='flex-grow'>
-                    <source src={audioPreview} type='audio/webm' />
+                    <source src={audioPreview} type='audio/wav' />
                     Your browser does not support the audio element.
                   </audio>
                   <Button
@@ -327,10 +263,10 @@ export function VoiceRecordingForm({
             <Button
               type='submit'
               className='w-full'
-              disabled={!audioBlob}
+              disabled={!audioFile}
             >
               <Upload className='mr-2 h-4 w-4' />
-              Submit Recording
+              Upload Voice Message
             </Button>
           </form>
         </Form>

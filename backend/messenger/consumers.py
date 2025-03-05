@@ -11,9 +11,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.session_id = self.scope['url_route']['kwargs']['session_id']
         
-        if not hasattr(self, 'session_instance'):
-            self.session_instance = await database_sync_to_async(ChatSession.objects.get)(session_key=self.session_id)
-
+        # Fetch ChatSession from database
+        self.session_instance = await database_sync_to_async(ChatSession.objects.get)(session_key=self.session_id)
 
         await self.channel_layer.group_add(
             self.session_id,
@@ -30,21 +29,24 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def get_connected_users_count(self):
+        """Returns the count of connected users in the session"""
         channel_layer = get_channel_layer()
-        group_channels = async_to_sync(channel_layer.group_channels)('online_users')
+        group_channels = async_to_sync(channel_layer.group_channels)(self.session_id)
         return len(group_channels)
 
     @database_sync_to_async
     def save_messages(self, payload):
+        """Saves the chat message to the database"""
         try:
             self.session_instance.addMessage(
                 sender=payload.get('uid'), 
                 message=payload.get('message')
             )
         except Exception as err:
-            pass
+            print(f"Error saving message: {err}")
 
     async def receive_json(self, content, **kwargs):
+        """Handles incoming WebSocket messages"""
         uid = content.get("uid")
         message = content.get("message")
 
@@ -53,22 +55,22 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(
             self.session_id,
             {
-                'type': 'boardcast_in_session',
+                'type': 'broadcast_in_session',  # Fixed Typo
                 'channelID': self.channel_name,
                 'uid': uid,
                 'message': message
             }
         )
-        
-    async def boardcast_in_session(self, event):
+
+    async def broadcast_in_session(self, event):
+        """Sends message to all users except the sender"""
         uid = event['uid']
         message = event['message']
 
-        is_same_user = self.channel_name == event['channelID']
-
-        if not is_same_user:
+        if self.channel_name != event['channelID']:  # Send to others, not sender
+            users_online = await self.get_connected_users_count()  # Get online users
             await self.send_json({
                 'uid': uid,
                 'message': message,
-                'users_online': self.channel_layer.receive_count
+                'users_online': users_online
             })

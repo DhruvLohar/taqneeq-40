@@ -28,4 +28,8 @@ class ClientSerializer(serializers.ModelSerializer):
             # Financial Details
             'loan_required', 
             'loan_amount',
+            
+            'status',
+            'transcription',
+            'extracted_details'
         ]

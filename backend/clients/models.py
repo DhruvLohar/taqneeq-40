@@ -44,6 +44,7 @@ class Client(models.Model):
     voice_recording = models.FileField(upload_to='voice_recordings/', blank=True, null=True)
     transcription = models.TextField(blank=True, null=True)
     key_tags = models.TextField(blank=True, null=True)  # Comma-separated tags
+    extracted_details = models.JSONField(default=dict, blank=True, null=True)
 
     # Financial Details
     loan_required = models.BooleanField(default=False)
